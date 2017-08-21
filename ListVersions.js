@@ -57,7 +57,32 @@ class ListVersions extends Component {
     }
 
 
+    gethtmldocs(data){
+      fetch('https://facebook.github.io/react-native/versions.html',{
+          method: 'GET',
+      })
+          .then((response) => {
+            var soup = new JSSoup(response._bodyText);
+            var t ="";
+            var t = soup.find('table .versions'.text).nextElement.text;
 
+            var patt1 = /0\56\d\d/g;
+            var result = soup.text.match(patt1);
+            console.log(result);
+            var versions ='';
+            for (var i =0; i<result.length;i++){
+              versions+=result[i]+'\n';
+            }
+
+    //        while (soup.findAll('th').text!=undefined){
+            this.setState({dataSource : ds.cloneWithRows(result)});
+    //        }
+          })
+          .catch((error) => {
+              console.error(error);
+          })
+          .done();
+}
 
     renderRow(data, secId, rowId, rowMap) {
             if (rowId == 0){

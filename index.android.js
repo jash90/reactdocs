@@ -23,24 +23,27 @@ export default class ReactDocs extends Component {
   };
 }
 componentWillMount() {
-  fetch('https://facebook.github.io/react-native/versions.html',{
+  fetch('https://facebook.github.io/react-native/docs/webview.html',{
       method: 'GET',
   })
-      .then((response) => {
-        var soup = new JSSoup(response._bodyText);
-        var t ="";
-        var t = soup.find('table .versions'.text).nextElement.text;
+    .then(response => {
+      response.text().then(function(responseText) {
+         var soup = new JSSoup(responseText);
+         var t = soup.find('div','inner-content').text;
+         console.log(t)
+      })
 
-        var patt1 = /0\56\d\d/g;
-        var result = soup.text.match(patt1);
-        console.log(result);
-        var versions ='';
-        for (var i =0; i<result.length;i++){
-          versions+=result[i]+'\n';
-        }
+
+        // var patt1 = /0\56\d\d/g;
+        // var result = soup.text.match(patt1);
+        // console.log(result);
+        // var versions ='';
+        // for (var i =0; i<result.length;i++){
+        //   versions+=result[i]+'\n';
+        // }
 
 //        while (soup.findAll('th').text!=undefined){
-        this.setState({text : versions});
+      //  this.setState({text :response._bodyText});
 //        }
       })
       .catch((error) => {
@@ -53,7 +56,10 @@ componentWillMount() {
   render() {
     return (
       <View style={styles.container}>
-      <ListVersions />
+      <WebView
+       source={{html: this.state.text}}
+       style={{marginTop: 20}}
+     />
       </View>
     );
   }
